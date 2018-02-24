@@ -10,4 +10,9 @@ public class HelloWorldController {
 	public String sayHello() {
 		return "index";
 	}
+	
+	@RequestMapping("/second-page")
+	public String second() {
+		return "pages/second";
+	}
 }
