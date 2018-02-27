@@ -1,7 +1,11 @@
 package com.devopsbuddy.config;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -10,7 +14,12 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
-
+	/** The application logger */
+	private static final org.slf4j.Logger LOG = org.slf4j.LoggerFactory.getLogger(SecurityConfig.class);
+	
+	@Autowired
+	private Environment env;
+	
 	private static final String[] PUBLIC_MATCHERS = {
 		"/webjars/**",
 		"/css/**",
@@ -20,10 +29,19 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		"/about/**",
 		"/contact/**",
 		"/error/**/*",
+		"/console/**",
 	};
 	
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
+		
+		List<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
+		if(activeProfiles.contains("dev")) {
+			LOG.info("Secueity", "WE ARE UN DEV ENV");
+			http.csrf().disable();
+			http.headers().frameOptions().disable();
+		}
+		
 		http
 			.authorizeRequests()// authorize all http requests
 			.antMatchers(PUBLIC_MATCHERS).permitAll()// don't require authentication for the declared URLs
