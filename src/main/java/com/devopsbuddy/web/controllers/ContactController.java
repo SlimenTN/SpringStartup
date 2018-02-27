@@ -26,6 +26,12 @@ public class ContactController {
 	 */
 	public static final String CONTACT_US_VIEW_NAME = "contact/contact";
 	
+	/**
+	 * The Autowired annotation will inject the object that implements the interface EmailServie
+	 * Based on the environment
+	 * if "prod" an instance of SmtpEmailService will be injected as declared in the DevelopmentConfig class
+	 * if "dev" an instance of MockEmailService will be injected as declared in the ProductionConfig class
+	 */
 	@Autowired
 	private EmailService emailService;
 	
